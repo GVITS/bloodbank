@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block meta %}
+
+<title>List All Pending Requests - Online Blood Bank</title>
+<meta name="keywords" content="blood, online blood, blood bank, nepal, health, medicines, emergency, hospitals" />
+<meta name="description" content="List all pending requests for blood and offfer help someone you can help." />
+<meta name="author" content="https://arjunsingh.com.np/" />
+
+<meta property="og:title" content="List All Pending Requests - Online Blood Bank" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:description" content="List all pending requests for blood and offfer help someone you can help." />
+<meta property="og:image" content="{% static 'images/online-blood-bank.png' %}" />
+<meta property="og:type" content="website" />
+
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="List All Pending Requests - Online Blood Bank" />
+<meta property="twitter:image" content="{% static 'images/online-blood-bank.png' %}" />
+<meta property="twitter:url" content="{{ request.build_absolute_uri }}" />
+<meta name="twitter:image:alt" content="Onlne Blood Bank" />
+
+{% endblock %}
+
+
+{% block styles %}
+{% endblock %}
+
+
+{% block main %}
+
+<!-- Main Banner -->
+<div class="container my-5">
+  <div class="row my-2">
+
+    <div class="col-12">
+      <h2 class="text-danger">Pending Requests</h2>
+      <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Requested By</th>
+            <th scope="col">Donation Date</th>
+            <th scope="col">Blood Group</th>
+            <th scope="col">Location</th>
+            <th scope="col">Image</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          {% for r in blood_requests %}
+          <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td><a class="alert-link" style="text-decoration: none;" href="{% url 'user_page' r.requested_by.id %}">{{ r.requested_by.first_name }} {{ r.requested_by.last_name }}</a></td>
+            <td>{{ r.for_date }}</td>
+            <td>{{ r.blood_group.group }}</td>
+            <td>{{ r.district }}, {{ r.local_level }}</td>
+            <td>
+              {% if r.image %}
+                <a class="alert-link" style="text-decoration: none;" target="_blank" href="{{ r.image.url }}">View</a>
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>
+                {% if r.requested_by == request.user %}
+                    <buton class="btn btn-secondary btn-sm">
+                        Offer Help
+                    </button>
+                {% else %}
+                    <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#offerHelp{{ r.id }}">
+                        Offer Help
+                    </button>
+
+                    <div class="modal fade" id="offerHelp{{ r.id }}" tabindex="-1" aria-labelledby="offerHelp{{ r.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="offerHelpLabel{{ r.id }}">Are you sure? This action cannot be undone!</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <b>{{ r.blood_group.group }}</b> in <b>{{ r.district }}, {{ r.local_level }}</b> on <b>{{ r.for_date }}</b> <br> <br>
+                                <a href="{% url 'offer_help' r.id %}" class="btn btn-danger">
+                                    Yes, Proceed to Offer Help
+                                </a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+         
+        </tbody>
+      </table>
+    </div>
+    </div>
+
+  </div>
+</div>
+<!-- End Main Banner -->
+
+{% endblock %}
+
+
+{% block scripts %}
+{% endblock %}

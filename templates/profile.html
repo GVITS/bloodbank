@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load thumbnail %}
+
+{% block meta %}
+
+<title>{{ user.first_name }} {{ user.last_name }} - Online Blood Bank</title>
+<meta name="keywords" content="blood, online blood, blood bank, nepal, health, medicines, emergency, hospitals" />
+<meta name="description" content="See brief details about {{ user.first_name }} {{ user.last_name }} and request for help." />
+<meta name="author" content="https://arjunsingh.com.np/" />
+
+<meta property="og:title" content="{{ user.first_name }} {{ user.last_name }} - Online Blood Bank" />
+<meta property="og:url" content="{{ request.build_absolute_uri }}" />
+<meta property="og:description" content="See brief details about {{ user.first_name }} {{ user.last_name }} and request for help." />
+<meta property="og:image" content="{% if user.display_photo %}{{ user.display_photo.url }}{% else %}{% static 'images/default.png' %}{% endif %}" />
+<meta property="og:type" content="website" />
+
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="{{ user.first_name }} {{ user.last_name }} - Online Blood Bank" />
+<meta property="twitter:image" content="{% if user.display_photo %}{{ user.display_photo.url }}{% else %}{% static 'images/default.png' %}{% endif %}" />
+<meta property="twitter:url" content="{{ request.build_absolute_uri }}" />
+<meta name="twitter:image:alt" content="Onlne Blood Bank" />
+
+{% endblock %}
+
+
+{% block styles %}
+{% endblock %}
+
+
+{% block main %}
+
+    <!-- Main Banner -->
+    <div class="container my-5">
+      {% if msg %}
+        <div class="alert alert-danger">{{ msg }}</div>
+      {% endif %}
+        <div class="row mb-2">
+            <div class="col-lg-6 mb-2 text-center">
+              {% if user.display_photo %}
+                {% thumbnail user.display_photo "300x300" crop="center" as img %}
+                  <img src="{{ img.url }}" class="img-fluid rounded shadow-lg" />
+                {% endthumbnail %}
+              {% else %}
+                <img src="{% static 'images/default.png' %}" class="img-fluid" />
+              {% endif %}
+            </div>
+            <div class="col-lg-6 mb-2">
+                <h2 class="display-3 fw-bold">{{ user.first_name }} {{ user.last_name }}</h2>
+                <p class="display-6">
+                    Blood Group: <strong>{{ user.blood_group.group }}</strong> <br>
+                    Address: <strong>{{ user.district }}, {{ user.local_level }}</strong> <br>
+                    Gender: <strong>{{ user.get_gender_display }}</strong> <br>
+                    Age: <strong>{{ user.age }}</strong>
+                </p>
+                
+                {% if form %}
+              
+                <!-- Button trigger modal -->
+                  <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#requestUser">
+                    Send Request
+                  </button>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="requestUser" tabindex="-1" aria-labelledby="requestUserLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="requestUserLabel">Request donor</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          
+                          <form action="{% url 'user_page' user.id %}" enctype="multipart/form-data" method="POST">
+                          
+                            {% include 'includes/general-form.html' %}
+
+                            <button class="w-100 mt-3 btn btn-danger btn-lg" type="submit">Request Donor</button>
+                
+                        </form>
+                        
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Modal End -->
+
+                  {% endif %}
+
+            </div>
+        </div>
+
+        <hr class="my-5">
+
+      </div>
+      <!-- End Main Banner -->
+  
+<datalist id="districts"></datalist>
+<datalist id="locals"></datalist>
+
+{% endblock %}
+
+
+{% block scripts %}
+
+{% include 'includes/populate_dropdown.html' %}
+
+<script>
+  document.getElementById('id_image').parentNode.setAttribute('class','mb-2');
+</script>
+
+{% if form.errors %}
+<script>
+  var myModal = new bootstrap.Modal(document.getElementById('updateProfieModal'), { keyboard: false });
+  myModal.show();
+</script>
+{% endif %}
+
+{% endblock %}

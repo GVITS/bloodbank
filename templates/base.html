@@ -1,0 +1,103 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {% block meta %}
+  {% endblock %}
+
+  <!-- Bootstrap CSS -->
+  <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="{% static 'fontawesome/css/all.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+  <!-- Favico -->
+  <link rel="shortcut icon" href="{% static 'images/favico.png' %}" type="image/png" />
+
+  <!-- Page Wise Extra Styles -->
+  {% block styles %}
+  {% endblock %}
+
+  <!-- Jquery -->
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+
+</head>
+
+<body class="bg-light d-flex flex-column min-vh-100">
+
+  <!-- Navbar Start -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'home_page' %}">Online Blood Bank</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'home_page' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'submit_request' %}">Submit Request</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'search_page' %}">Browse Donors</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'pending_requests' %}">Pending Requests</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav mb-2 mb-lg-0">
+          {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'dashboard_page' %}">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'changePassword_page' %}">Change Password</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout_page' %}">Logout</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login_page' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register_page' %}">Register</a>
+          </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <!-- Navbar End -->
+
+  {% block main %}
+  {% endblock %}
+
+  <footer class="mt-auto py-3 alert-danger">
+    <div class="container text-center">
+      <span class="text-muted">&copy; 2021, Online Blood Bank</span>
+    </div>
+  </footer>
+
+  <!-- Bootstrap Bundle with Popper -->
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+  <!-- Custom Script -->
+  <script src="{% static 'js/app.js' %}"></script>
+
+  <!-- Page Wise Extra Script -->
+  {% block scripts %}
+  {% endblock %}
+
+</body>
+
+</html>
